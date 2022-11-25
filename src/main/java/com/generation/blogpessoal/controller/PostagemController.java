@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -52,19 +53,21 @@ public class PostagemController {
    }
    @PutMapping
     public ResponseEntity<Postagem> putPostagem(@Valid  @RequestBody Postagem postagem) {
-        return ResponseEntity.status(HttpStatus.OK).body(postagemRepository.save(postagem));
+
+        return postagemRepository.findById(postagem.getId())
+                .map(resposta -> ResponseEntity.status(HttpStatus.OK).body(postagemRepository.save(postagem)))
+                .orElse(ResponseEntity.notFound().build());
+        /*return ResponseEntity.status(HttpStatus.OK).body(postagemRepository.save(postagem));
         /*atualiza*/
     }
-
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void deletePostagem(@PathVariable Long id){
+        Optional<Postagem> postagem = postagemRepository.findById(id);
+        if(postagem.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         postagemRepository.deleteById(id);
-     /*deleta*/
-       /* return postagemRepository.deleteById(id)
-                .map(resposta -> ResponseEntity.ok(resposta))
-                .orElse(ResponseEntity.notFound().build());*/
-
-
+        /*deleta*/
     }
 
 }

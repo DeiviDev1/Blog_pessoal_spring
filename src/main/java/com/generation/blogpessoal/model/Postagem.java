@@ -1,5 +1,6 @@
 package com.generation.blogpessoal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "tb_postagens")
 public class Postagem {
 
+    @NotNull(message = "Id NÃO ENCONTRADO")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -30,7 +32,17 @@ public class Postagem {
     private LocalDateTime data;
 
 
+    @ManyToOne
+    @JsonIgnoreProperties("postagem")
+    private Tema tema;
 
+    public Tema getTema() {
+        return tema;
+    }
+
+    public void setTema(Tema tema) {
+        this.tema = tema;
+    }
 
     public long getId() {
         return id;
