@@ -1,6 +1,7 @@
 package com.generation.blogpessoal.controller;
 
 import com.generation.blogpessoal.model.Usuario;
+import com.generation.blogpessoal.model.UsuarioLogin;
 import com.generation.blogpessoal.repository.UsuarioRepository;
 import com.generation.blogpessoal.service.UsuarioService;
 import org.junit.jupiter.api.BeforeAll;
@@ -72,7 +73,6 @@ public class UsuarioControllerTest {
                 .exchange("/usuarios/all", HttpMethod.GET, null, String.class);
 
         assertEquals(HttpStatus.OK,  resposta.getStatusCode());
-
     }
 
 
@@ -82,10 +82,10 @@ public class UsuarioControllerTest {
     public void deveAtualizarUmUsuario(){
 
         Optional<Usuario> usuarioCadastrado = usuarioService.cadastrarUsuario(new Usuario(0L,
-                "Juliana Andrews", "juju@gmaail.com","juju12345678", "  "));
+                "Juliana teste 01", "juju@gmail.com","juju12345678", "  "));
 
         Usuario usuarioUpdate = new Usuario(usuarioCadastrado.get().getId(),
-        "Juliana Andrews Ramos", "juju@gmaail.com","juju12345678", "  ");
+        "Juliana teste 02 ", "juju@gmail.com","juju12345678", "  ");
         HttpEntity<Usuario> corpoRequisicao = new HttpEntity<Usuario>(usuarioUpdate);
 
                 ResponseEntity<Usuario>  corpoResposta= testRestTemplate
@@ -95,10 +95,29 @@ public class UsuarioControllerTest {
                 assertEquals(HttpStatus.OK,corpoResposta.getStatusCode());
                 assertEquals(corpoRequisicao.getBody().getNome(), corpoResposta.getBody().getNome());
                 assertEquals(corpoRequisicao.getBody().getUsuario(),corpoResposta.getBody().getUsuario());
-
     }
 
+    @Test
+    @DisplayName("filtrar por ID")
+    public void devebuscarUsuarioPorId() {
+        ResponseEntity<String> response = testRestTemplate
+                .withBasicAuth("root@root.com", "rootroot")
+                .exchange("/usuarios/2", HttpMethod.GET, null, String.class);
 
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
 
+    @Test
+    @DisplayName("Login ")
+    public void Login() {
+
+        HttpEntity<UsuarioLogin> corpoRequisicao = new HttpEntity<>(
+                new UsuarioLogin("root@root.com", "rootroot"));
+
+        ResponseEntity<Usuario> corpoResposta = testRestTemplate
+                .exchange("/usuarios/logar", HttpMethod.POST, corpoRequisicao, Usuario.class);
+
+        assertEquals(HttpStatus.OK, corpoResposta.getStatusCode());
+    }
 
 }
