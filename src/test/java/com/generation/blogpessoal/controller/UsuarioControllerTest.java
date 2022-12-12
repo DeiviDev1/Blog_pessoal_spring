@@ -113,7 +113,7 @@ public class UsuarioControllerTest {
         usuarioService.cadastrarUsuario(new Usuario(0L,
                 "test09","testetes09@gmail.com","12345678", " "));
 
-        HttpEntity<UsuarioLogin> corpoRequisicao = new HttpEntity<>(
+        HttpEntity<UsuarioLogin> corpoRequisicao = new HttpEntity<UsuarioLogin>(
                 new UsuarioLogin("testetes09@gmail.com", "12345678"));
 
         ResponseEntity<Usuario> corpoResposta = testRestTemplate
